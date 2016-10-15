@@ -14,9 +14,20 @@ export class Auth {
   constructor() {
     // Add callback for lock `authenticated` event
     this.lock.on("authenticated", (authResult:any) => {
-      localStorage.setItem('id_token', authResult.idToken);
+      this.lock.getProfile(authResult.idToken, function(error:any, profile:any){
+
+        if(error){
+          throw new Error(error);
+        }
+        // console.log(profile);
+
+        localStorage.setItem('id_token', authResult.idToken);
+        localStorage.setItem('profile', JSON.stringify(profile));
+      });  
     });
   }
+
+
 
   public login() {
     // Call the show method to display the widget.
@@ -32,5 +43,7 @@ export class Auth {
   public logout() {
     // Remove token from localStorage
     localStorage.removeItem('id_token');
+    localStorage.removeItem('profile');
+
   };
 }
